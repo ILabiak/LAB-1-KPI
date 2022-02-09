@@ -13,7 +13,7 @@ const showMenu = () => {
     "Choose mode\n1) Interactive mode\n2) File mode\nAny other key - exit\n",
     function (mode) {
       if (mode === "1") interactiveFunc();
-      else if (mode === "2") console.log("mode 2");
+      else if (mode === "2") notInteractiveFunc();
       else {
         console.log("Program stopped");
         rl.close();
@@ -23,7 +23,7 @@ const showMenu = () => {
 };
 
 const interactiveFunc = async () => {
-  console.log("Quadric equation instance: ax^2 + bx + c = 0");
+  console.log("Quadratic equation instance: ax^2 + bx + c = 0");
   const a = await questionFunc("a");
   const b = await questionFunc("b");
   const c = await questionFunc("c");
@@ -33,18 +33,63 @@ const interactiveFunc = async () => {
   showMenu();
 };
 
+const notInteractiveFunc = async () => {
+  console.log("Quadratic equation instance: ax^2 + bx + c = 0");
+  rl.question(
+    `Write name of txt file with variables. 
+Instance: text.txt
+This file should contain variables like this: 1 0 0\n`,
+    function (filename) {
+      if (fs.existsSync(filename)) {
+        const regex = /-*\d+[.\d+]* -*\d+[.\d+]* -*\d+[.\d+]*/;
+        const fileContent = fs.readFileSync(filename, "utf-8");
+        if (regex.test(fileContent)) {
+          const numbersStr = fileContent.match(regex)[0];
+          const numbersArr = numbersStr.split(" ");
+          const [a, b, c] = [
+            parseFloat(numbersArr[0]),
+            parseFloat(numbersArr[1]),
+            parseFloat(numbersArr[2]),
+          ];
+          if (a == 0) {
+            console.log("a can't be equal 0\n");
+            showMenu();
+            return;
+          }
+          console.log(`
+a =\x1b[32m ${a} \x1b[37m
+b =\x1b[32m ${b} \x1b[37m
+c =\x1b[32m ${c} \x1b[37m`);
+          console.log(`Equation is: (${a}) x^2 + (${b}) x + (${c}) = 0`);
+          const roots = solveQuadraticEquation(a, b, c);
+          console.log(roots);
+          showMenu();
+        }
+      } else {
+        console.log("There is no such file in this directory");
+        showMenu();
+      }
+    }
+  );
+};
+
 const questionFunc = async (name) => {
   return new Promise((resolve) => {
     rl.question(
       `Write ${name} (use . to input float number)\n`,
       async function (inp) {
         let res = parseFloat(inp);
+        console.log(`${name} =\x1b[32m ${inp} \x1b[37m`);
         if (isNaN(res)) {
           console.log(
             `Error. Expected a valid real number, got ${inp} instead. Please write number...\n`
           );
           resolve(await questionFunc(name));
         } else {
+          if (name == "a" && res == 0) {
+            console.log("a can't be equal 0. Please write number again...\n");
+            resolve(await questionFunc(name));
+          }
           resolve(res);
         }
       }
