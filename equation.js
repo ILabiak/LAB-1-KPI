@@ -8,13 +8,19 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-rl.question(
-  "Choose mode\n1) Interactive mode\n2) File mode\nAny other key - exit\n",
-  function (mode) {
-    if (mode === "1") interactiveFunc();
-    if (mode === "2") console.log("mode 2");
-  }
-);
+const showMenu = () => {
+  rl.question(
+    "Choose mode\n1) Interactive mode\n2) File mode\nAny other key - exit\n",
+    function (mode) {
+      if (mode === "1") interactiveFunc();
+      else if (mode === "2") console.log("mode 2");
+      else {
+        console.log("Program stopped");
+        rl.close();
+      }
+    }
+  );
+};
 
 const interactiveFunc = async () => {
   console.log("Quadric equation instance: ax^2 + bx + c = 0");
@@ -22,6 +28,9 @@ const interactiveFunc = async () => {
   const b = await questionFunc("b");
   const c = await questionFunc("c");
   console.log(`Equation is: (${a}) x^2 + (${b}) x + (${c}) = 0`);
+  const roots = solveQuadraticEquation(a, b, c);
+  console.log(roots);
+  showMenu();
 };
 
 const questionFunc = async (name) => {
@@ -46,10 +55,12 @@ const questionFunc = async (name) => {
 const solveQuadraticEquation = (a, b, c) => {
   const result = (-1 * b + Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / (2 * a);
   const result2 = (-1 * b - Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / (2 * a);
-  if (isNaN(result)) return "There are 0 roots";
-  if (result == result2) return `There is 1 root\nx1 = ${result}`;
+  if (isNaN(result)) return "There are 0 roots\n";
+  if (result == result2) return `There is 1 root\nx1 = ${result}\n`;
   return `There are 2 roots
 x1 = ${result}
-x2 = ${result2}`;
+x2 = ${result2}
+`;
 };
 
+showMenu();
