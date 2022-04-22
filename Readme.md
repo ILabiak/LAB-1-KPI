@@ -20,8 +20,6 @@ There are two modes:
 1. Interactive (manual input)
 2. Noninteractive (File mode)
 
-Example of text for a file mode:
-
 Interactive:
 ```bash
 node .\equation.js
@@ -37,6 +35,7 @@ Noninteractive with repository txt file:
 node .\equation.js test.txt
 ```
 
+Example of text for a file mode:
 ```
 1\s0.6\s-3\n  (1 0.6 -3)
 ```
