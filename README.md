@@ -22,6 +22,21 @@ There are two modes:
 
 Example of text for a file mode:
 
+Interactive:
+```bash
+node .\equation.js
+```
+
+Noninteractive:
+```bash
+node .\equation.js [txt_file]
+```
+
+Noninteractive with repository txt file:
+```bash
+node .\equation.js test.txt
+```
+
 ```
 1\s0.6\s-3\n  (1 0.6 -3)
 ```
